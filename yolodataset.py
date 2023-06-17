@@ -29,7 +29,7 @@ def ann2yolo(id_patient, path2newdataset = './dataset'):
         mask = np.interp(patient.mask[:,:,i], (0, 1), (0, 255)).astype(np.uint8)
         _, threshold = cv2.threshold(mask, 100, 255, cv2.THRESH_BINARY)
         contours, _ = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if np.shape(contours) ==(0,):
+        if len(contours) ==0:
             no_tumor+=1
         else:
             tumor+=1
