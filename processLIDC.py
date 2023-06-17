@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import numpy as np
 import cv2
 import math
+import plotly.subplots as sp
 
 class Patient():
     def __init__(self, id_patient):
@@ -143,8 +144,8 @@ class Patient():
         self.imgs_scaled = np.log(imgs+1)
 
     def imshow(self, slices=(0,), label=True, scaled=True, path2save=None):
-        """gpu = True es par aindicar que el modelo ha sido entrenado con la grafica y por tanto,
-        el tnsor de datos qu debe comerse es de cuda tensor"""
+        """gpu = True es para indicar que el modelo ha sido entrenado con la grafica y por tanto,
+        el tensor de datos que debe usarse es de cuda tensor"""
         print('obteniendo los datos...')
         mask = [self.mask[:, :, i] for i in slices]
         if scaled:
@@ -153,29 +154,46 @@ class Patient():
             images = [self.vol[:, :, i] for i in slices]
 
         num_images = len(slices)
-        rows = int(math.sqrt(num_images))+1
+        rows = int(math.sqrt(num_images)) + 1
         cols = math.ceil(num_images / rows)
 
-        fig, axes = plt.subplots(rows, cols, figsize=(10, 10))
-        axes = axes.flatten()
-        for i, image in enumerate(images):
+        fig = sp.make_subplots(rows=rows, cols=cols)
 
-            axes[i].imshow(image)
-            axes[i].axis('off')
-            axes[i].set_title('Slice {}'.format(slices[i]))
+        for i, image in enumerate(images):
+            row = (i // cols) + 1
+            col = (i % cols) + 1
+
+            fig.add_trace(
+                go.Heatmap(z=image, colorscale='gray'),
+                row=row,
+                col=col
+            )
+
             if label:
-                contours = axes[i].contour(mask[i], levels=[0.5], colors='blue')
-                axes[i].clabel(contours, inline=True, fontsize=8)
-        fig.legend()
-        if num_images < len(axes):
-            for j in range(num_images, len(axes)):
-                fig.delaxes(axes[j])
-        fig.suptitle('{}'.format(self.id_patient))
-        plt.tight_layout()
-        plt.show()
+                fig.add_trace(
+                    go.Contour(z=mask[i], contours=dict(coloring='lines', start=0, end=1, size=1),
+                            showscale=False, line=dict(color='red'), name='Etiqueta'),
+                    row=row,
+                    col=col
+                )
+
+        fig.update_layout(
+            title='{}'.format(self.id_patient),
+            height=600,
+            width=600,
+            showlegend=True,
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=-0.2,
+                xanchor="right",
+                x=1
+            ),
+        )
+
+        fig.show(renderer='browser')
+
         if path2save is not None:
-            fig.set_facecolor('white')
-            path = '{}/pred_grid_{}.png'.format(path2save, self.id_patient)
-            fig.savefig('{}'.format(path), dpi=300, bbox_inches='tight')
-            print('figura {} guardada'.format(path))
+            fig.write_image('{}/pred_grid_{}.png'.format(path2save, self.id_patient), scale=3)
+            print('figura guardada')
 
