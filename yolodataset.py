@@ -43,6 +43,7 @@ def ann2yolo(id_patient, path2newdataset = './dataset', includes = []):
         with open(fullpath, "w") as file:
             for contour in contours:
                 if cv2.contourArea(contour) != 0:
+                    file.write("0")
                     # Obtener las coordenadas de los puntos del contorno
                     points = contour.reshape(-1, 2)
 
