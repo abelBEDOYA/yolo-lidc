@@ -36,19 +36,18 @@ def ann2yolo(id_patient, path2newdataset = './dataset'):
         # Crear un archivo de texto para escribir los contornos
         with open(fullpath, "w") as file:
             for contour in contours:
-                # Escribir '0' al principio de cada línea
-                file.write("0")
+                if cv2.contourArea(contour) != 0:
+                    # Obtener las coordenadas de los puntos del contorno
+                    points = contour.reshape(-1, 2)
 
-                # Obtener las coordenadas de los puntos del contorno
-                points = contour.reshape(-1, 2)
+                    # Escribir las coordenadas en el archivo
+                    for point in points:
+                        x, y = point
+                        file.write(f"{x/w} {y/h} ")
 
-                # Escribir las coordenadas en el archivo
-                for point in points:
-                    x, y = point
-                    file.write(f" {x/w} {y/h}")
+                    # Nueva línea para el siguiente contorno
+                    file.write("\n")
 
-                # Nueva línea para el siguiente contorno
-                file.write("\n")
     return tumor, no_tumor
 
 
