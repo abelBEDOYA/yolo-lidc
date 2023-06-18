@@ -91,4 +91,4 @@ if __name__ =='__main__':
 
     path2olddataset = '/home/faraujo/TFM/manifest-1675801116903/LIDC-IDRI'
     
-    create_dataset(path2olddataset, path2newdataset, val=3)
+    create_dataset(path2olddataset, path2newdataset, val=0.2)
