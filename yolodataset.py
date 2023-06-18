@@ -9,22 +9,28 @@ from tqdm import tqdm
 
 
 
-def dicom2jpg(id_patient, path2newdataset = './dataset'):
+def dicom2jpg(id_patient, path2newdataset = './dataset', includes = []):
     patient = Patient(id_patient)
     patient.scale()
     h, w, n_slices = np.shape(patient.imgs_scaled)
     for i in range(n_slices):
+        if not len(includes)==0:
+            if not includes[i]:
+                continue
         fullpath = f'{path2newdataset}/images/{id_patient}_{i}.png'
         imagen_8bits = np.interp(patient.imgs_scaled[:,:,i], (0, 8), (0, 255)).astype(np.uint8)
         cv2.imwrite(fullpath, imagen_8bits)
 
 
-def ann2yolo(id_patient, path2newdataset = './dataset'):
+def ann2yolo(id_patient, path2newdataset = './dataset', includes = []):
     patient = Patient(id_patient)
     h, w, n_slices = np.shape(patient.mask)
     no_tumor = 0
     tumor =0
     for i in range(n_slices):
+        if not len(includes)==0:
+            if not includes[i]:
+                continue
         fullpath = f'{path2newdataset}/labels/{id_patient}_{i}.txt'
         mask = np.interp(patient.mask[:,:,i], (0, 1), (0, 255)).astype(np.uint8)
         _, threshold = cv2.threshold(mask, 100, 255, cv2.THRESH_BINARY)
@@ -51,7 +57,20 @@ def ann2yolo(id_patient, path2newdataset = './dataset'):
     return tumor, no_tumor
 
 
-def create_dataset(path2olddataset,path2newdataset, val = 0.2):
+def get_include(id_patient, percent = 0.3):
+    patient = Patient(id_patient)
+    h, w, n_slices = np.shape(patient.mask)
+    includes = []
+    for i in range(n_slices):
+        if np.mean(patient.mask[:,:,i])>0:
+            includes.append(True)
+        else:
+            include_random = random.random() < percent
+            includes.append(include_random)
+    return includes
+
+
+def create_dataset(path2olddataset,path2newdataset, val = 0.2, percent_include=0.3):
     print('convirtiendo dataset a yolo...')
     id_patients = os.listdir(path2olddataset)
     failed_patients = []
@@ -68,14 +87,15 @@ def create_dataset(path2olddataset,path2newdataset, val = 0.2):
     tumor_val, no_tumor_val = 0, 0
     for id_patient in tqdm(id_patients):
         train_random = random.random() > val
+        includes = get_include(id_patient, percent = percent_include)
         if train_random:
-            dicom2jpg(id_patient, path2newdataset+'/train')
-            tumor, no_tumor = ann2yolo(id_patient, path2newdataset+'/train')
+            dicom2jpg(id_patient, path2newdataset+'/train', includes = includes)
+            tumor, no_tumor = ann2yolo(id_patient, path2newdataset+'/train', includes = includes)
             tumor_train += tumor
             no_tumor_train += no_tumor
         else:
-            dicom2jpg(id_patient, path2newdataset+'/validation')
-            tumor, no_tumor = ann2yolo(id_patient, path2newdataset+'/validation')
+            dicom2jpg(id_patient, path2newdataset+'/validation', includes = includes)
+            tumor, no_tumor = ann2yolo(id_patient, path2newdataset+'/validation', includes = includes)
             tumor_val += tumor
             no_tumor_val += no_tumor
 
@@ -86,8 +106,7 @@ def create_dataset(path2olddataset,path2newdataset, val = 0.2):
 
 
 if __name__ =='__main__':
-    path2newdataset='/home/faraujo/TFM/datasetPNG'
-
+    path2newdataset='/home/faraujo/TFM/dataset_include_all'
     path2olddataset = '/home/faraujo/TFM/manifest-1675801116903/LIDC-IDRI'
-    
-    create_dataset(path2olddataset, path2newdataset, val=0.2)
+
+    create_dataset(path2olddataset, path2newdataset, val=0.2, percent_include=0.2)
