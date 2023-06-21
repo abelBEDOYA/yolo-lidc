@@ -147,11 +147,11 @@ class Patient():
         """gpu = True es para indicar que el modelo ha sido entrenado con la grafica y por tanto,
         el tensor de datos que debe usarse es de cuda tensor"""
         print('obteniendo los datos...')
-        mask = [self.mask[:, :, i] for i in slices]
+        mask = [self.mask[::-1, :, i] for i in slices]
         if scaled:
-            images = [self.imgs_scaled[:, :, i] for i in slices]
+            images = [self.imgs_scaled[::-1, :, i] for i in slices]
         else:
-            images = [self.vol[:, :, i] for i in slices]
+            images = [self.vol[::-1, :, i] for i in slices]
 
         num_images = len(slices)
         rows = int(math.sqrt(num_images)) + 1
@@ -162,7 +162,6 @@ class Patient():
         for i, image in enumerate(images):
             row = (i // cols) + 1
             col = (i % cols) + 1
-
             fig.add_trace(
                 go.Heatmap(z=image, colorscale='gray'),
                 row=row,
@@ -192,6 +191,7 @@ class Patient():
         )
 
         fig.show(renderer='browser')
+
 
         if path2save is not None:
             fig.write_image('{}/pred_grid_{}.png'.format(path2save, self.id_patient), scale=3)
