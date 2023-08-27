@@ -5,7 +5,7 @@ import numpy as np
 import random
 import os
 from tqdm import tqdm
-
+random.seed(123)
 
 
 
@@ -107,7 +107,7 @@ def create_dataset(path2olddataset,path2newdataset, val = 0.2, percent_include=0
 
 
 if __name__ =='__main__':
-    path2newdataset='/home/faraujo/TFM/dataset_include_all'
+    path2newdataset='/home/faraujo/TFM/datasets/datasets_agosto'
     path2olddataset = '/home/faraujo/TFM/manifest-1675801116903/LIDC-IDRI'
 
-    create_dataset(path2olddataset, path2newdataset, val=0.2, percent_include=0.2)
+    create_dataset(path2olddataset, path2newdataset, val=1, percent_include=0.2)
