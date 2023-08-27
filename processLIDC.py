@@ -22,7 +22,7 @@ class Patient():
         for ann_clust in self.scan.cluster_annotations():
             # print('hola')
             nod_count +=1
-            cmask, cbbox, _ = consensus(ann_clust, clevel=0.5,
+            cmask, cbbox, _ = consensus(ann_clust, clevel=0.1,
                                         pad=[(20, 20), (20, 20), (0, 0)])
             mask[cbbox] += cmask
         if print_count is True:
