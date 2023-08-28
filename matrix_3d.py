@@ -23,57 +23,56 @@ def calculate_iou(clusters_pred, clusters_ann):
     return iou
 
 def calculate_confusion_matrix(mask_pred, mask_ann):
-    print(mask_pred.shape)
     clusters_pred, n_clus_pred = ndimage.label(ndimage.binary_dilation(mask_pred, structure=np.ones((3,3,3))))
     clusters_ann, n_clus_ann = ndimage.label(ndimage.binary_dilation(mask_ann, structure=np.ones((3,3,3))))
-    colors = ['red', 'orange', 'yellow', 'green', 'black', 'purple', 'pink', 'brown', 'cyan', 'lime', 'violet', 'gray', 'green', 
-              'red', 'orange', 'yellow', 'green', 'black', 'purple', 'pink', 'brown', 'cyan', 'lime', 'violet', 'gray']
-    fig = go.Figure()
-    for i in range(n_clus_ann):
-        i= i +1
-        condition_indices = np.where(clusters_ann == i)
-        # Obtener los valores y los índices que cumplen la condición
-        selected_indices = np.array(condition_indices).T  # Transponer los índices para obtener (n_puntos, 3)
-        # Crear un scatter plot utilizando los índices como coordenadas
+    # colors = ['red', 'orange', 'yellow', 'green', 'black', 'purple', 'pink', 'brown', 'cyan', 'lime', 'violet', 'gray', 'green', 
+    #           'red', 'orange', 'yellow', 'green', 'black', 'purple', 'pink', 'brown', 'cyan', 'lime', 'violet', 'gray']
+    # fig = go.Figure()
+    # for i in range(n_clus_ann):
+    #     i= i +1
+    #     condition_indices = np.where(clusters_ann == i)
+    #     # Obtener los valores y los índices que cumplen la condición
+    #     selected_indices = np.array(condition_indices).T  # Transponer los índices para obtener (n_puntos, 3)
+    #     # Crear un scatter plot utilizando los índices como coordenadas
         
 
-        # # # # Agregar traza para los puntos con los índices originales
-        fig.add_trace(go.Scatter3d(
-            x=selected_indices[:, 0],
-            y=selected_indices[:, 1],
-            z=selected_indices[:, 2],
-            mode='markers',
-            marker=dict(
-                size=4,  # Cambiamos el tamaño a 4 (puedes ajustar este valor)
-                color=colors[i-1],  
-                opacity=0.8
-        ),
-            name=f'Cluster: {i}'
-        ))
-    condition_indices_pred = np.where(clusters_pred > 0.5)
-    selected_indices_pred = np.array(condition_indices_pred).T 
-    fig.add_trace(go.Scatter3d(
-        x=selected_indices_pred[:, 0]+0.2,
-        y=selected_indices_pred[:, 1]+0.2,
-        z=selected_indices_pred[:, 2]+0.2,
-        mode='markers',
-        marker=dict(
-            symbol='cross', 
-            size=4,  # Cambiamos el tamaño a 4 (puedes ajustar este valor)
-            color='blue',  
-            opacity=0.8
-    ),
-        name='Conjunto Predicho'
-    ))
-    # # Configurar el diseño del gráfico
-    fig.update_layout(scene=dict(
-        xaxis_title='x',
-        yaxis_title='y',
-        zaxis_title='z'
-    ))
+    #     # # # # Agregar traza para los puntos con los índices originales
+    #     fig.add_trace(go.Scatter3d(
+    #         x=selected_indices[:, 0],
+    #         y=selected_indices[:, 1],
+    #         z=selected_indices[:, 2],
+    #         mode='markers',
+    #         marker=dict(
+    #             size=4,  # Cambiamos el tamaño a 4 (puedes ajustar este valor)
+    #             color=colors[i-1],  
+    #             opacity=0.8
+    #     ),
+    #         name=f'Cluster: {i}'
+    #     ))
+    # condition_indices_pred = np.where(clusters_pred > 0.5)
+    # selected_indices_pred = np.array(condition_indices_pred).T 
+    # fig.add_trace(go.Scatter3d(
+    #     x=selected_indices_pred[:, 0]+0.2,
+    #     y=selected_indices_pred[:, 1]+0.2,
+    #     z=selected_indices_pred[:, 2]+0.2,
+    #     mode='markers',
+    #     marker=dict(
+    #         symbol='cross', 
+    #         size=4,  # Cambiamos el tamaño a 4 (puedes ajustar este valor)
+    #         color='blue',  
+    #         opacity=0.8
+    # ),
+    #     name='Conjunto Predicho'
+    # ))
+    # # # Configurar el diseño del gráfico
+    # fig.update_layout(scene=dict(
+    #     xaxis_title='x',
+    #     yaxis_title='y',
+    #     zaxis_title='z'
+    # ))
 
-    # Mostrar el gráfico
-    fig.show()
+    # # Mostrar el gráfico
+    # fig.show()
     
     true_positive = 0
     false_positive = 0
@@ -168,57 +167,57 @@ def get_arrays(id_patient):
     # if np.all(mask_labels==0):
     #     return np.array([[[0], [0]], [[0], [0]]]), np.array([[[0], [0]], [[0], [0]]])
 
-    arrayyy = np.stack(mask_labels)
-    arrayyy_pred = np.stack(mask_predicciones)
-    if np.all(arrayyy_pred==0):
-        print('\n \n \n \n es todo 0!! \n \n \n \n')
-    condition_indices = np.where(arrayyy > 0.5)
-    condition_indices_pred = np.where(arrayyy_pred > 0.5)
-    # Obtener los valores y los índices que cumplen la condición
-    selected_indices = np.array(condition_indices).T  # Transponer los índices para obtener (n_puntos, 3)
-    selected_indices_pred = np.array(condition_indices_pred).T  # Transponer los índices para obtener (n_puntos, 3)
-    print(selected_indices_pred)
-    # Crear un scatter plot utilizando los índices como coordenadas
-    fig = go.Figure()
+    # arrayyy = np.stack(mask_labels)
+    # arrayyy_pred = np.stack(mask_predicciones)
+    # if np.all(arrayyy_pred==0):
+    #     print('\n \n \n \n es todo 0!! \n \n \n \n')
+    # condition_indices = np.where(arrayyy > 0.5)
+    # condition_indices_pred = np.where(arrayyy_pred > 0.5)
+    # # Obtener los valores y los índices que cumplen la condición
+    # selected_indices = np.array(condition_indices).T  # Transponer los índices para obtener (n_puntos, 3)
+    # selected_indices_pred = np.array(condition_indices_pred).T  # Transponer los índices para obtener (n_puntos, 3)
+    # print(selected_indices_pred)
+    # # Crear un scatter plot utilizando los índices como coordenadas
+    # fig = go.Figure()
 
-    # # # # Agregar traza para los puntos con los índices originales
-    fig.add_trace(go.Scatter3d(
-        x=selected_indices[:, 0],
-        y=selected_indices[:, 1],
-        z=selected_indices[:, 2],
-        mode='markers',
-        marker=dict(
-            size=4,  # Cambiamos el tamaño a 4 (puedes ajustar este valor)
-            color='red',  
-            opacity=0.8
-    ),
-        name='Conjunto Original'
-    ))
+    # # # # # Agregar traza para los puntos con los índices originales
+    # fig.add_trace(go.Scatter3d(
+    #     x=selected_indices[:, 0],
+    #     y=selected_indices[:, 1],
+    #     z=selected_indices[:, 2],
+    #     mode='markers',
+    #     marker=dict(
+    #         size=4,  # Cambiamos el tamaño a 4 (puedes ajustar este valor)
+    #         color='red',  
+    #         opacity=0.8
+    # ),
+    #     name='Conjunto Original'
+    # ))
 
-    # Agregar traza para los puntos con los índices predichos
-    fig.add_trace(go.Scatter3d(
-        x=selected_indices_pred[:, 0]+0.2,
-        y=selected_indices_pred[:, 1]+0.2,
-        z=selected_indices_pred[:, 2]+0.2,
-        mode='markers',
-        marker=dict(
-            symbol='cross', 
-            size=4,  # Cambiamos el tamaño a 4 (puedes ajustar este valor)
-            color='blue',  
-            opacity=0.8
-    ),
-        name='Conjunto Predicho'
-    ))
+    # # Agregar traza para los puntos con los índices predichos
+    # fig.add_trace(go.Scatter3d(
+    #     x=selected_indices_pred[:, 0]+0.2,
+    #     y=selected_indices_pred[:, 1]+0.2,
+    #     z=selected_indices_pred[:, 2]+0.2,
+    #     mode='markers',
+    #     marker=dict(
+    #         symbol='cross', 
+    #         size=4,  # Cambiamos el tamaño a 4 (puedes ajustar este valor)
+    #         color='blue',  
+    #         opacity=0.8
+    # ),
+    #     name='Conjunto Predicho'
+    # ))
 
-    # # Configurar el diseño del gráfico
-    fig.update_layout(scene=dict(
-        xaxis_title='x',
-        yaxis_title='y',
-        zaxis_title='z'
-    ))
+    # # # Configurar el diseño del gráfico
+    # fig.update_layout(scene=dict(
+    #     xaxis_title='x',
+    #     yaxis_title='y',
+    #     zaxis_title='z'
+    # ))
 
-    # Mostrar el gráfico
-    fig.show()
+    # # Mostrar el gráfico
+    # fig.show()
     return np.stack(mask_predicciones), np.stack(mask_labels)
 
 def sumar_diccionarios(dic1, dic2):
