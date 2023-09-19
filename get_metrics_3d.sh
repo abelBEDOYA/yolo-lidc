@@ -1,1 +1,1 @@
-python3 matrix_3d.py --val --model "/home/faraujo/TFM/yolo_trainings/train_100_include02_large/best.pt" --save './matrix_3d_pruebas/'  --val_path '/home/faraujo/TFM/datasets/datasets_agosto/validation/images/' --threshold 0.2 --iou_threshold 0.2
+python3 matrix_3d.py --val --model "/path/to/model.pt" --save '/path/to/metrics'  --val_path '/path/to/dataset/' --threshold 0.3 --iou_threshold 0.2
