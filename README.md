@@ -2,7 +2,7 @@
 ## ¿Qué permite?
 
 - Convertir el dataset LIDC-IDRI (imagenes .dicom + anotaciones de segmentacion de 4 radiologos) a formato YOLO, en contreto para yolov8-segmentation.
-- Realizar una validación del modelo obtenido de yolov8-segmentation bajo un criterio de intersection over union, IoU, en 3 dimensiones.
+- Realizar una validación del modelo obtenido de yolov8-segmentation bajo un criterio de intersection over union, IoU, en 3 dimensiones mediante la matriz de confusión.
 
 ![imagenes y etiquetas](./assets/collage_img_mask.png)
 
