@@ -1,0 +1,7 @@
+names:
+- nodulo
+
+nc: 1
+
+train: ./train/images/
+val: ./validation/images/

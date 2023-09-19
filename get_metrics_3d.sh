@@ -1,0 +1,1 @@
+python3 matrix_3d.py --val --model "/path/to/model.pt" --save '/path/to/metrics'  --val_path '/path/to/dataset/' --threshold 0.3 --iou_threshold 0.2
